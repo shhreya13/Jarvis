@@ -1,0 +1,22 @@
+# Jarvis daemon: gateway + Telegram + scheduler
+FROM node:22-slim AS build
+WORKDIR /app
+RUN npm install -g pnpm@11
+COPY pnpm-workspace.yaml pnpm-lock.yaml package.json tsconfig.base.json ./
+COPY packages ./packages
+COPY apps/dashboard/package.json ./apps/dashboard/package.json
+RUN pnpm install --frozen-lockfile
+RUN pnpm --filter './packages/*' build
+
+FROM node:22-slim
+WORKDIR /app
+ENV NODE_ENV=production \
+    JARVIS_HOME=/data/.jarvis \
+    JARVIS_WORKSPACE=/data/workspace
+COPY --from=build /app ./
+VOLUME /data
+EXPOSE 4820
+# Inside a container the gateway must bind 0.0.0.0 — the compose file mounts a
+# config with gateway.host set accordingly; the published port stays loopback
+# on the host (see docker-compose.yml).
+CMD ["node", "packages/cli/dist/index.js", "start"]

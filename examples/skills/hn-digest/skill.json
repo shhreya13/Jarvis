@@ -1,0 +1,7 @@
+{
+  "name": "hn-digest",
+  "description": "Fetches the Hacker News front page and writes a compact digest.",
+  "instructions": "When the user (or a scheduled job) asks for a Hacker News digest: call hn_top to fetch the current front page (default 10 stories). Then write a digest: one line per story — `N. title (points ▲) — url` — followed by a 2–3 sentence read on themes worth noticing. Keep the whole digest under 3500 characters so it fits a Telegram message. Do not editorialize beyond the closing read; never invent stories.",
+  "tools": ["http_request"],
+  "permissions": ["read"]
+}

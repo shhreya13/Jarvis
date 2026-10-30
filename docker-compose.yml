@@ -1,0 +1,42 @@
+services:
+  daemon:
+    build:
+      context: .
+      dockerfile: Dockerfile.daemon
+    # Loopback-only on the host; the dashboard (and you) reach it via 127.0.0.1.
+    ports:
+      - "127.0.0.1:4820:4820"
+    volumes:
+      - jarvis-data:/data
+    environment:
+      # Keys are read from env vars named in config.json — never stored on disk.
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN:-}
+      - BRAVE_API_KEY=${BRAVE_API_KEY:-}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET:-}
+    restart: unless-stopped
+
+  dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile.dashboard
+    ports:
+      - "127.0.0.1:3300:3300"
+    environment:
+      # The dashboard pairs from YOUR BROWSER, so this points at the host port.
+      - NEXT_PUBLIC_JARVIS_GATEWAY_URL=http://127.0.0.1:4820
+    depends_on:
+      - daemon
+    restart: unless-stopped
+
+volumes:
+  jarvis-data:
+
+# First run:
+#   docker compose run --rm daemon node packages/cli/dist/index.js onboard
+#   → then edit the config inside the volume to set gateway.host to "0.0.0.0"
+#     (required for the container port mapping), or run:
+#   docker compose run --rm daemon node -e "const fs=require('fs');const p=process.env.JARVIS_HOME+'/config.json';const c=JSON.parse(fs.readFileSync(p));c.gateway.host='0.0.0.0';fs.writeFileSync(p,JSON.stringify(c,null,2))"
+#   Get the dashboard pairing token:
+#   docker compose run --rm daemon node packages/cli/dist/index.js token

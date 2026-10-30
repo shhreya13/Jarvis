@@ -1,0 +1,24 @@
+# deps
+node_modules/
+.pnpm-store/
+
+# build output
+dist/
+*.tsbuildinfo
+.next/
+out/
+
+# env & local state
+.env
+.env.*
+!.env.example
+
+# test artifacts
+coverage/
+playwright-report/
+test-results/
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/

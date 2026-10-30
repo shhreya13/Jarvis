@@ -1,0 +1,41 @@
+{
+  "name": "@jarvis/gateway",
+  "version": "0.1.0",
+  "description": "Jarvis daemon: REST + websocket gateway, Telegram, scheduler",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@fastify/cors": "^11.3.0",
+    "@fastify/websocket": "^11.0.0",
+    "@jarvis/core": "workspace:*",
+    "@jarvis/skills": "workspace:*",
+    "@jarvis/tools": "workspace:*",
+    "croner": "^9.0.0",
+    "fastify": "^5.0.0",
+    "grammy": "^1.30.0",
+    "ws": "^8.18.0",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "@types/ws": "^8.5.13",
+    "typescript": "^5.7.2",
+    "vitest": "^3.0.0"
+  }
+}
